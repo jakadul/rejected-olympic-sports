@@ -1,27 +1,28 @@
-"""Entry for make.fun bounty u-motasimfuad-rejected-olympic-sports-9d83e7da.
+"""make.fun entry: u-motasimfuad-rejected-olympic-sports-9d83e7da
 
-Writes one text to /output/entry.txt. No network, deterministic.
+Emits one judged text line into the output file. Offline, deterministic.
 """
 import os
 
-TEXT = "DRAFT PLACEHOLDER LINE"
+ENTRY_TEXT = "Professional queue standing: medals for stance, sighs earn the artistic score."
+GATE_LIMIT = 200
 
 
-def write_entry(text, limit):
-    n = len(text)
-    assert text.strip(), "text is only white space"
-    assert 1 <= n <= limit, f"length {n} outside 1..{limit}"
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-    os.makedirs(out_dir, exist_ok=True)
-    with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
-        f.write(text)
+def emit() -> int:
+    value = ENTRY_TEXT
+    n = len(value)
+    assert value.strip(), "entry text is empty"
+    assert 1 <= n <= GATE_LIMIT, f"{n} code points outside 1..{GATE_LIMIT}"
+    target = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
+    os.makedirs(target, exist_ok=True)
+    handle = open(os.path.join(target, "entry.txt"), "w", encoding="utf-8")
+    try:
+        handle.write(value)
+    finally:
+        handle.close()
     return n
 
 
-def main():
-    n = write_entry(TEXT, 200)
-    print(f"wrote entry.txt: {n} code points")
-
-
 if __name__ == "__main__":
-    main()
+    count = emit()
+    print(f"entry.txt written with {count} code points")
